@@ -71,11 +71,11 @@ const createPosts = function (array) {
   return postList;
 };
 
-const renderPosts = function (postList, destinationBlock) {
+const render = function (elementList, destinationBlock) {
   const postFragment = document.createDocumentFragment();
 
-  for (let i = 0; i < postList.length; i++) {
-    postFragment.appendChild(postList[i]);
+  for (let i = 0; i < elementList.length; i++) {
+    postFragment.appendChild(elementList[i]);
   }
 
   destinationBlock.appendChild(postFragment);
@@ -83,7 +83,7 @@ const renderPosts = function (postList, destinationBlock) {
 
 posts = generatePosts(COUNT);
 
-renderPosts(createPosts(posts), picturesBlock);
+render(createPosts(posts), picturesBlock);
 
 
 // Задание 3.2.
@@ -135,7 +135,7 @@ description.textContent = posts[0].description;
 
 deleteComments(commentsArray, commentsBlock);
 
-renderPosts(createComments(posts[0]), commentsBlock);
+render(createComments(posts[0]), commentsBlock);
 
 counterOfComments.classList.add(`hidden`);
 counterOfLoadedComments.classList.add(`hidden`);
