@@ -145,34 +145,53 @@ counterOfLoadedComments.classList.add(`hidden`);
 
 // Задание 4.1.
 
+const EXIT_BUTTON = `Escape`;
 const MAX_SCALE = 100;
 const MIN_SCALE = 25;
 const SCALE_STEP = 25;
+const MAX_EFFECT_VALUE = 100;
 let numberScale = 100;
 const MAX_HACHTAGS = 5;
+const MAX_SYMBOLS_IN_COMMENT = 140;
 const HASTAG_REGEX = RegExp(`^#[a-zA-Z0-9а-яА-Я]{1,19}$`);
 const effectClass = `effects__preview--`;
 let chosenEffect = `none`;
 const effectLevel = {
+  none: {
+    type: `none`,
+    min: ``,
+    max: ``,
+    units: ``
+  },
   chrome: {
+    type: `grayscale`,
     min: 0,
-    max: 1
+    max: 1,
+    units: ``
   },
   sepia: {
+    type: `sepia`,
     min: 0,
-    max: 1
+    max: 1,
+    units: ``
   },
   marvin: {
+    type: `invert`,
     min: 0,
-    max: 100
+    max: 100,
+    units: `%`
   },
   phobos: {
+    type: `blur`,
     min: 0,
-    max: 3
+    max: 3,
+    units: `px`
   },
   heat: {
+    type: `brightness`,
     min: 1,
-    max: 3
+    max: 3,
+    units: ``
   }
 };
 const uploadInput = document.querySelector(`#upload-file`);
@@ -197,7 +216,7 @@ const closeForm = function () {
   document.body.classList.remove(`modal-open`);
   uploadInput.value = ``;
   imagePreview.style = `transform: scale(1)`;
-  numberScale = 100;
+  numberScale = MAX_SCALE;
   imagePreview.children[0].classList.remove(chosenEffectClass);
   chosenEffect = `none`;
   chosenEffectClass = effectClass + chosenEffect;
@@ -205,7 +224,7 @@ const closeForm = function () {
   if (!effectLevelContainer.classList.contains(`hidden`)) {
     effectLevelContainer.classList.add(`hidden`);
   }
-  effectValue.value = 100;
+  effectValue.value = MAX_EFFECT_VALUE;
   imagePreview.children[0].style = `filter: none`;
 };
 
@@ -221,46 +240,15 @@ const effectsChangeHandler = function (evt) {
   } else if (!effectLevelContainer.classList.contains(`hidden`)) {
     effectLevelContainer.classList.add(`hidden`);
   }
-  effectValue.value = 100;
-  if (chosenEffect === `none`) {
-    imagePreview.children[0].style = `filter: none`;
-  }
-  if (chosenEffect === `chrome`) {
-    imagePreview.children[0].style = `filter: grayscale(1)`;
-  }
-  if (chosenEffect === `sepia`) {
-    imagePreview.children[0].style = `filter: sepia(1)`;
-  }
-  if (chosenEffect === `marvin`) {
-    imagePreview.children[0].style = `filter: invert(100%)`;
-  }
-  if (chosenEffect === `phobos`) {
-    imagePreview.children[0].style = `filter: blur(3px)`;
-  }
-  if (chosenEffect === `heat`) {
-    imagePreview.children[0].style = `filter: brightness(3)`;
-  }
+  effectValue.value = MAX_EFFECT_VALUE;
+  imagePreview.children[0].style.filter = `${effectLevel[chosenEffect].type}(${effectLevel[chosenEffect].max}${effectLevel[chosenEffect].units})`;
 };
 
 // Настройка эффекта от ползунка
 
 const onEffectPinMouseUp = function () {
   let rangeValue = Math.abs(effectLevel[chosenEffect].max * effectValue.value / 100 - effectLevel[chosenEffect].min) + effectLevel[chosenEffect].min;
-  if (chosenEffect === `chrome`) {
-    imagePreview.children[0].style = `filter: grayscale(` + rangeValue + `)`;
-  }
-  if (chosenEffect === `sepia`) {
-    imagePreview.children[0].style = `filter: sepia(` + rangeValue + `)`;
-  }
-  if (chosenEffect === `marvin`) {
-    imagePreview.children[0].style = `filter: invert(` + rangeValue + `%)`;
-  }
-  if (chosenEffect === `phobos`) {
-    imagePreview.children[0].style = `filter: blur(` + rangeValue + `px)`;
-  }
-  if (chosenEffect === `heat`) {
-    imagePreview.children[0].style = `filter: brightness(` + rangeValue + `)`;
-  }
+  imagePreview.children[0].style.filter = `${effectLevel[chosenEffect].type}(${rangeValue}${effectLevel[chosenEffect].units})`;
 };
 
 // Функция валидации хэштегов и комментария
@@ -298,7 +286,7 @@ const onHashtagsInput = function () {
 };
 
 const onCommentInput = function () {
-  if (commentInput.value.length > 140) {
+  if (commentInput.value.length > MAX_SYMBOLS_IN_COMMENT) {
     commentInput.setCustomValidity(`Длина комментария не может составлять больше 140 символов.`);
   } else {
     commentInput.setCustomValidity(``);
@@ -318,7 +306,7 @@ uploadInput.addEventListener(`change`, function () {
   });
 
   document.addEventListener(`keydown`, function (evt) {
-    if (evt.key === `Escape`) {
+    if (evt.key === EXIT_BUTTON) {
       if (hashtagsInput !== document.activeElement && commentInput !== document.activeElement) {
         closeForm();
       }
