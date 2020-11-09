@@ -36,7 +36,7 @@
   };
 
   window.data = {
-    generatePosts: generatePosts
+    generatePosts
   };
 
 })();

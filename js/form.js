@@ -19,7 +19,7 @@
     document.body.classList.remove(`modal-open`);
     uploadInput.value = ``;
     window.editPhoto.imagePreview.style = `transform: scale(1)`;
-    window.editPhoto.setNumberScale(window.editPhoto.maxScale);
+    window.editPhoto.setNumberScale(window.editPhoto.MAX_SCALE);
     window.editPhoto.imagePreview.children[0].classList.remove(window.editPhoto.chosenEffectClass);
     window.editPhoto.chosenEffect = `none`;
     window.editPhoto.chosenEffectClass = window.editPhoto.effectClass + window.editPhoto.chosenEffect;
@@ -27,7 +27,7 @@
     if (!window.editPhoto.effectLevelContainer.classList.contains(`hidden`)) {
       window.editPhoto.effectLevelContainer.classList.add(`hidden`);
     }
-    window.editPhoto.effectValue.value = window.editPhoto.maxEffectValue;
+    window.editPhoto.effectValue.value = window.editPhoto.MAX_EFFECT_VALUE;
     window.editPhoto.imagePreview.children[0].style = `filter: none`;
     hashtagsInput.setCustomValidity(``);
   };

@@ -119,16 +119,16 @@
   effectPin.addEventListener(`mouseup`, onEffectPinMouseUp);
 
   window.editPhoto = {
-    maxScale: MAX_SCALE,
-    maxEffectValue: MAX_EFFECT_VALUE,
-    setNumberScale: setNumberScale,
-    numberScale: numberScale,
-    effectClass: effectClass,
-    chosenEffect: chosenEffect,
-    scaleValue: scaleValue,
-    imagePreview: imagePreview,
-    effectLevelContainer: effectLevelContainer,
-    effectValue: effectValue
+    MAX_SCALE,
+    MAX_EFFECT_VALUE,
+    setNumberScale,
+    numberScale,
+    effectClass,
+    chosenEffect,
+    scaleValue,
+    imagePreview,
+    effectLevelContainer,
+    effectValue
   };
 
 })();

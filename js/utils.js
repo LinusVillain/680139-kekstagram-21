@@ -18,8 +18,8 @@
   };
 
   window.utils = {
-    getRandomInt: getRandomInt,
-    shuffleArray: shuffleArray
+    getRandomInt,
+    shuffleArray
   };
 
 })();

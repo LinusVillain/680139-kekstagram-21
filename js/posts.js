@@ -41,8 +41,8 @@
   render(createPosts(posts), picturesBlock);
 
   window.posts = {
-    posts: posts,
-    render: render
+    posts,
+    render
   };
 
 })();
