@@ -8,33 +8,40 @@
   const HASTAG_REGEX = RegExp(`^#[a-zA-Z0-9а-яА-Я]{1,19}$`);
   const uploadInput = document.querySelector(`#upload-file`);
   const uploadForm = document.querySelector(`.img-upload__overlay`);
-  const closeButton = document.querySelector(`#upload-cancel`);
-  const hashtagsInput = document.querySelector(`.text__hashtags`);
-  const commentInput = document.querySelector(`.text__description`);
+  const closeButton = uploadForm.querySelector(`#upload-cancel`);
+  const hashtagsInput = uploadForm.querySelector(`.text__hashtags`);
+  const commentInput = uploadForm.querySelector(`.text__description`);
 
   // Закрытие формы и сброс настроек
 
-  const closeForm = function () {
+  const closeForm = () => {
     uploadForm.classList.add(`hidden`);
     document.body.classList.remove(`modal-open`);
     uploadInput.value = ``;
-    window.editPhoto.imagePreview.style = `transform: scale(1)`;
-    window.editPhoto.setNumberScale(window.editPhoto.MAX_SCALE);
+
+    window.editPhoto.transformImage(window.editPhoto.MAX_SCALE);
+
     window.editPhoto.imagePreview.children[0].classList.remove(window.editPhoto.chosenEffectClass);
-    window.editPhoto.chosenEffect = `none`;
+    window.editPhoto.chosenEffect = window.editPhoto.NO_EFFECT;
     window.editPhoto.chosenEffectClass = window.editPhoto.effectClass + window.editPhoto.chosenEffect;
     window.editPhoto.imagePreview.children[0].classList.add(window.editPhoto.chosenEffectClass);
+
     if (!window.editPhoto.effectLevelContainer.classList.contains(`hidden`)) {
       window.editPhoto.effectLevelContainer.classList.add(`hidden`);
     }
+
     window.editPhoto.effectValue.value = window.editPhoto.MAX_EFFECT_VALUE;
-    window.editPhoto.imagePreview.children[0].style = `filter: none`;
+    window.editPhoto.imagePreview.children[0].style = `filter: ${window.editPhoto.NO_EFFECT}`;
+
+    hashtagsInput.value = ``;
     hashtagsInput.setCustomValidity(``);
+    commentInput.value = ``;
+    commentInput.setCustomValidity(``);
   };
 
   // Функция валидации хэштегов и комментария
 
-  const onHashtagsInput = function () {
+  const onHashtagsInput = () => {
     let hashtags = hashtagsInput.value.split(` `);
 
     if (hashtags.length === 1 && hashtags[0] === ``) {
@@ -66,7 +73,7 @@
     }
   };
 
-  const onCommentInput = function () {
+  const onCommentInput = () => {
     if (commentInput.value.length > MAX_SYMBOLS_IN_COMMENT) {
       commentInput.setCustomValidity(`Длина комментария не может составлять больше 140 символов.`);
     } else {
@@ -76,18 +83,16 @@
 
   // Открытие и закрытие формы
 
-  uploadInput.addEventListener(`change`, function () {
+  uploadInput.addEventListener(`change`, () => {
 
     uploadForm.classList.remove(`hidden`);
     document.body.classList.add(`modal-open`);
 
-    window.editPhoto.scaleValue.value = window.editPhoto.numberScale + `%`;
-
-    closeButton.addEventListener(`click`, function () {
+    closeButton.addEventListener(`click`, () => {
       closeForm();
     });
 
-    document.addEventListener(`keydown`, function (evt) {
+    document.addEventListener(`keydown`, (evt) => {
       if (evt.key === EXIT_BUTTON) {
         if (hashtagsInput !== document.activeElement && commentInput !== document.activeElement) {
           closeForm();

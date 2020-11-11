@@ -6,7 +6,7 @@
   const MIN_SCALE = 25;
   const SCALE_STEP = 25;
   const MAX_EFFECT_VALUE = 100;
-  let numberScale = 100;
+  const NO_EFFECT = `none`;
   const effectClass = `effects__preview--`;
   let chosenEffect = `none`;
   const effectLevel = {
@@ -53,65 +53,65 @@
   const imagePreview = document.querySelector(`.img-upload__preview`);
   const effects = document.querySelector(`.effects`);
   const effectLevelContainer = document.querySelector(`.effect-level`);
-  const effectPin = document.querySelector(`.effect-level__pin`);
-  const effectValue = document.querySelector(`.effect-level__value`);
-
-  // Создана для изменения numberScale при закрытии формы в form.js, иначе изменения не передаются
-
-  const setNumberScale = function (value) {
-    numberScale = value;
-  };
+  const effectPin = effectLevelContainer.querySelector(`.effect-level__pin`);
+  const effectValue = effectLevelContainer.querySelector(`.effect-level__value`);
 
   // Смена стилей
 
-  const effectsChangeHandler = function (evt) {
+  const effectsChangeHandler = (evt) => {
     imagePreview.children[0].classList.remove(chosenEffectClass);
     chosenEffect = evt.target.value;
     chosenEffectClass = effectClass + chosenEffect;
     imagePreview.children[0].classList.add(chosenEffectClass);
+
     if (evt.target.value !== `none`) {
       effectLevelContainer.classList.remove(`hidden`);
     } else if (!effectLevelContainer.classList.contains(`hidden`)) {
       effectLevelContainer.classList.add(`hidden`);
     }
     effectValue.value = MAX_EFFECT_VALUE;
-    if (evt.target.value === `none`) {
-      imagePreview.children[0].style.filter = evt.target.value;
-    } else {
-      imagePreview.children[0].style.filter = `${effectLevel[chosenEffect].type}(${effectLevel[chosenEffect].max}${effectLevel[chosenEffect].units})`;
-    }
+
+    imagePreview.children[0].style.filter = (evt.target.value === NO_EFFECT) ? evt.target.value : `${effectLevel[chosenEffect].type}(${effectLevel[chosenEffect].max}${effectLevel[chosenEffect].units})`;
   };
 
   // Настройка эффекта от ползунка
 
-  const onEffectPinMouseUp = function () {
+  const onEffectPinMouseUp = () => {
     let rangeValue = Math.abs(effectLevel[chosenEffect].max * effectValue.value / 100 - effectLevel[chosenEffect].min) + effectLevel[chosenEffect].min;
     imagePreview.children[0].style.filter = `${effectLevel[chosenEffect].type}(${rangeValue}${effectLevel[chosenEffect].units})`;
   };
 
   // Изменение масштаба
 
-  scaleBigger.addEventListener(`click`, function () {
+  const transformImage = (size) => {
+    scaleValue.value = `${size}%`;
+    imagePreview.style = `transform: scale(${(size * 0.01)})`;
+  };
+
+  scaleBigger.addEventListener(`click`, () => {
+    let numberScale = parseInt(scaleValue.value, 10);
+
     if (numberScale < MAX_SCALE) {
       numberScale = numberScale + SCALE_STEP;
-      scaleValue.value = numberScale + `%`;
-      imagePreview.style = `transform: scale(${(numberScale * 0.01)})`;
+      transformImage(numberScale);
     }
   });
 
-  scaleSmaller.addEventListener(`click`, function () {
+  scaleSmaller.addEventListener(`click`, () => {
+    let numberScale = parseInt(scaleValue.value, 10);
+
     if (numberScale > MIN_SCALE) {
       numberScale = numberScale - SCALE_STEP;
-      scaleValue.value = numberScale + `%`;
-      imagePreview.style = `transform: scale(${(numberScale * 0.01)})`;
+      transformImage(numberScale);
     }
   });
 
   // Наложение эффекта
-
   let chosenEffectClass = effectClass + chosenEffect;
+
   effectLevelContainer.classList.add(`hidden`);
   imagePreview.children[0].classList.add(chosenEffectClass);
+
   effects.addEventListener(`change`, effectsChangeHandler);
 
   // Отпускание ползунка
@@ -121,14 +121,14 @@
   window.editPhoto = {
     MAX_SCALE,
     MAX_EFFECT_VALUE,
-    setNumberScale,
-    numberScale,
+    NO_EFFECT,
     effectClass,
     chosenEffect,
     scaleValue,
     imagePreview,
     effectLevelContainer,
-    effectValue
+    effectValue,
+    transformImage
   };
 
 })();
