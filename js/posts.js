@@ -3,10 +3,12 @@
 (function () {
 
   const COUNT = 25;
+  const LOAD_STEP = 5;
   let posts = [];
   const postTemplate = document.querySelector(`#picture`).content.querySelector(`.picture`);
   const picturesBlock = document.querySelector(`.pictures`);
   const EXIT_BUTTON = `Escape`;
+  const ENTER_BUTTON = `Enter`;
   const postBlock = document.querySelector(`.big-picture`);
   const postImage = postBlock.querySelector(`.big-picture__img`);
   const postLikes = postBlock.querySelector(`.likes-count`);
@@ -15,6 +17,7 @@
   const cancelButton = postBlock.querySelector(`.big-picture__cancel`);
   const commentsBlock = document.querySelector(`.social__comments`);
   const commentsLoader = postBlock.querySelector(`.comments-loader`);
+  const loadedComments = postBlock.querySelector(`.social__comment-count`);
 
   const deleteComments = function () {
     const commentsArray = commentsBlock.querySelectorAll(`.social__comment`);
@@ -49,28 +52,22 @@
   const createComments = function (post, alreadyCreated) {
     const commentsFragment = document.createDocumentFragment();
 
-    // // TEST
-    // let alreadyCreated = 0;
-    // for (let i = 0; i < post.comments.length / 5; i++) {
-    //   console.log(post.comments.slice(alreadyCreated, alreadyCreated + 5));
-    //   alreadyCreated += 5;
-    // }
-
     let commentsToRender = post.comments.slice(alreadyCreated, alreadyCreated + 5);
     for (let i = 0; i < commentsToRender.length; i++) {
       commentsFragment.appendChild(createComment(commentsToRender[i]));
     }
-    // END TEST
-
-    // for (let i = 0; i < post.comments.length; i++) {
-    //   commentsFragment.appendChild(createComment(post.comments[i]));
-    // }
 
     commentsBlock.appendChild(commentsFragment);
   };
 
   const onPostElementClick = (photo) => {
     let commentsCounter = 0;
+    if (photo.comments.length > LOAD_STEP) {
+      commentsLoader.classList.remove(`hidden`);
+    } else {
+      commentsLoader.classList.add(`hidden`);
+    }
+
     postBlock.classList.remove(`hidden`);
     document.body.classList.add(`modal-open`);
 
@@ -83,10 +80,27 @@
 
     createComments(photo, commentsCounter);
 
-    commentsLoader.addEventListener(`click`, function () {
-      console.log(commentsCounter);
-      commentsCounter += 5;
+    if (photo.comments.length <= LOAD_STEP) {
+      if (photo.comments.length === 1) {
+        loadedComments.textContent = `${photo.comments.length} из ${photo.comments.length} комментария`;
+      } else {
+        loadedComments.textContent = `${photo.comments.length} из ${photo.comments.length} комментариев`;
+      }
+    } else {
+      loadedComments.textContent = `${LOAD_STEP} из ${photo.comments.length} комментариев`;
+    }
+
+    commentsLoader.addEventListener(`click`, function createCommentsHandler() {
+      commentsCounter += LOAD_STEP;
       createComments(photo, commentsCounter);
+
+      if (commentsCounter >= (photo.comments.length - commentsCounter)) {
+        loadedComments.textContent = `${commentsCounter + (photo.comments.length - commentsCounter)} из ${photo.comments.length} комментариев`;
+        commentsLoader.classList.add(`hidden`);
+        commentsLoader.removeEventListener(`click`, createCommentsHandler);
+      } else {
+        loadedComments.textContent = `${commentsCounter + LOAD_STEP} из ${photo.comments.length} комментариев`;
+      }
     });
 
     cancelButton.addEventListener(`click`, onCancelClick);
@@ -108,9 +122,16 @@
     likes.textContent = photo.likes;
     comments.textContent = photo.comments.length;
 
-    postElement.addEventListener(`click`, function (evt) {
+    postElement.addEventListener(`click`, (evt) => {
       evt.preventDefault();
       onPostElementClick(photo);
+    });
+
+    postElement.addEventListener(`keydown`, (event) => {
+      if (event.key === ENTER_BUTTON) {
+        event.preventDefault();
+        onPostElementClick(photo);
+      }
     });
 
     return postElement;
