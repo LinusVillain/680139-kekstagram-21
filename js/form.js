@@ -37,6 +37,7 @@
     hashtagsInput.setCustomValidity(``);
     commentInput.value = ``;
     commentInput.setCustomValidity(``);
+    document.getElementById(`effect-none`).checked = true;
   };
 
   // Функция валидации хэштегов и комментария
