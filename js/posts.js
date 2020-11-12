@@ -138,16 +138,19 @@
   };
 
   const createPosts = () => {
-    const postFragment = document.createDocumentFragment();
+    window.load(function (responsePosts) {
+      const postFragment = document.createDocumentFragment();
 
-    for (let i = 0; i < posts.length; i++) {
-      postFragment.appendChild(createPost(posts[i]));
-    }
+      for (let i = 0; i < responsePosts.length; i++) {
+        postFragment.appendChild(createPost(responsePosts[i]));
+      }
 
-    picturesBlock.appendChild(postFragment);
+      picturesBlock.appendChild(postFragment);
+    }, function () {});
+
   };
 
-  posts = window.data.generatePosts(COUNT);
+  // posts = window.data.generatePosts(COUNT);
 
   createPosts();
 
