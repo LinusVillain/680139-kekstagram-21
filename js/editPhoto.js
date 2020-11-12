@@ -7,6 +7,7 @@
   const SCALE_STEP = 25;
   const MAX_EFFECT_VALUE = 100;
   const NO_EFFECT = `none`;
+  const PIN_HALF = 9;
   const effectClass = `effects__preview--`;
   let chosenEffect = `none`;
   const effectLevel = {
@@ -53,6 +54,7 @@
   const imagePreview = document.querySelector(`.img-upload__preview`);
   const effects = document.querySelector(`.effects`);
   const effectLevelContainer = document.querySelector(`.effect-level`);
+  const effectLine = effectLevelContainer.querySelector(`.effect-level__line`);
   const effectPin = effectLevelContainer.querySelector(`.effect-level__pin`);
   const effectValue = effectLevelContainer.querySelector(`.effect-level__value`);
   const effectDepth = document.querySelector(`.effect-level__depth`);
@@ -113,9 +115,9 @@
       moveEvt.preventDefault();
 
       let shift = startCoords - moveEvt.clientX;
-      const pinMaxPose = effectPin.parentElement.offsetWidth;
+      const pinMaxPose = effectLine.offsetWidth;
       const newPinPos = effectPin.offsetLeft - shift;
-      if (newPinPos >= 0 && newPinPos <= pinMaxPose) {
+      if ((newPinPos) >= -PIN_HALF && newPinPos <= (pinMaxPose + PIN_HALF)) {
 
         effectPin.style.left = `${newPinPos}px`;
 
