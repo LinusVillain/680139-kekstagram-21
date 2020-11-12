@@ -53,8 +53,10 @@
   const imagePreview = document.querySelector(`.img-upload__preview`);
   const effects = document.querySelector(`.effects`);
   const effectLevelContainer = document.querySelector(`.effect-level`);
+  const effectLine = effectLevelContainer.querySelector(`.effect-level__line`);
   const effectPin = effectLevelContainer.querySelector(`.effect-level__pin`);
   const effectValue = effectLevelContainer.querySelector(`.effect-level__value`);
+  const effectDepth = document.querySelector(`.effect-level__depth`);
 
   // Смена стилей
 
@@ -72,13 +74,8 @@
     effectValue.value = MAX_EFFECT_VALUE;
 
     imagePreview.children[0].style.filter = (evt.target.value === NO_EFFECT) ? evt.target.value : `${effectLevel[chosenEffect].type}(${effectLevel[chosenEffect].max}${effectLevel[chosenEffect].units})`;
-  };
-
-  // Настройка эффекта от ползунка
-
-  const onEffectPinMouseUp = () => {
-    let rangeValue = Math.abs(effectLevel[chosenEffect].max * effectValue.value / 100 - effectLevel[chosenEffect].min) + effectLevel[chosenEffect].min;
-    imagePreview.children[0].style.filter = `${effectLevel[chosenEffect].type}(${rangeValue}${effectLevel[chosenEffect].units})`;
+    effectPin.style.left = `100%`;
+    effectDepth.style.width = `100%`;
   };
 
   // Изменение масштаба
@@ -106,6 +103,48 @@
     }
   });
 
+  // Движение ползунка
+
+  effectPin.addEventListener(`mousedown`, function (evt) {
+    evt.preventDefault();
+
+    let startCoordinates = evt.clientX;
+
+    const onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      let shift = startCoordinates - moveEvt.clientX;
+
+      const pinMaxPosition = effectLine.offsetWidth;
+      const newPinPosition = effectPin.offsetLeft - shift;
+
+      startCoordinates = moveEvt.clientX;
+
+      if (newPinPosition >= 0 && newPinPosition <= pinMaxPosition) {
+
+        effectPin.style.left = `${newPinPosition}px`;
+
+        effectValue.value = Math.round(effectPin.offsetLeft / pinMaxPosition * 100);
+
+        effectDepth.style.width = `${effectValue.value}%`;
+
+        let rangeValue = (effectLevel[chosenEffect].max - effectLevel[chosenEffect].min) / 100 * effectValue.value + effectLevel[chosenEffect].min;
+        imagePreview.children[0].style.filter = `${effectLevel[chosenEffect].type}(${rangeValue}${effectLevel[chosenEffect].units})`;
+
+      }
+    };
+
+    const onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener(`mousemove`, onMouseMove);
+      document.removeEventListener(`mouseup`, onMouseUp);
+    };
+
+    document.addEventListener(`mousemove`, onMouseMove);
+    document.addEventListener(`mouseup`, onMouseUp);
+  });
+
   // Наложение эффекта
   let chosenEffectClass = effectClass + chosenEffect;
 
@@ -114,14 +153,11 @@
 
   effects.addEventListener(`change`, effectsChangeHandler);
 
-  // Отпускание ползунка
-
-  effectPin.addEventListener(`mouseup`, onEffectPinMouseUp);
-
   window.editPhoto = {
     MAX_SCALE,
     MAX_EFFECT_VALUE,
     NO_EFFECT,
+    effects,
     effectClass,
     chosenEffect,
     scaleValue,
