@@ -7,7 +7,6 @@
   const SCALE_STEP = 25;
   const MAX_EFFECT_VALUE = 100;
   const NO_EFFECT = `none`;
-  const PIN_HALF = 9;
   const effectClass = `effects__preview--`;
   let chosenEffect = `none`;
   const effectLevel = {
@@ -109,26 +108,28 @@
   effectPin.addEventListener(`mousedown`, function (evt) {
     evt.preventDefault();
 
-    let startCoords = evt.clientX;
+    let startCoordinates = evt.clientX;
 
     const onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      let shift = startCoords - moveEvt.clientX;
-      const pinMaxPose = effectLine.offsetWidth;
-      const newPinPos = effectPin.offsetLeft - shift;
-      if ((newPinPos) >= -PIN_HALF && newPinPos <= (pinMaxPose + PIN_HALF)) {
+      let shift = startCoordinates - moveEvt.clientX;
 
-        effectPin.style.left = `${newPinPos}px`;
+      const pinMaxPosition = effectLine.offsetWidth;
+      const newPinPosition = effectPin.offsetLeft - shift;
 
-        effectValue.value = Math.round(effectPin.offsetLeft / pinMaxPose * 100);
+      startCoordinates = moveEvt.clientX;
+
+      if (newPinPosition >= 0 && newPinPosition <= pinMaxPosition) {
+
+        effectPin.style.left = `${newPinPosition}px`;
+
+        effectValue.value = Math.round(effectPin.offsetLeft / pinMaxPosition * 100);
 
         effectDepth.style.width = `${effectValue.value}%`;
 
         let rangeValue = (effectLevel[chosenEffect].max - effectLevel[chosenEffect].min) / 100 * effectValue.value + effectLevel[chosenEffect].min;
         imagePreview.children[0].style.filter = `${effectLevel[chosenEffect].type}(${rangeValue}${effectLevel[chosenEffect].units})`;
-
-        startCoords = moveEvt.clientX;
 
       }
     };
