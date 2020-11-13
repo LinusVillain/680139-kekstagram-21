@@ -2,7 +2,7 @@
 
 (function () {
 
-  const COUNT = 25;
+  // const COUNT = 25;
   const LOAD_STEP = 5;
   let posts = [];
   const postTemplate = document.querySelector(`#picture`).content.querySelector(`.picture`);
@@ -61,6 +61,7 @@
   };
 
   const onPostElementClick = (photo) => {
+
     let commentsCounter = 0;
     if (photo.comments.length > LOAD_STEP) {
       commentsLoader.classList.remove(`hidden`);
@@ -90,18 +91,20 @@
       loadedComments.textContent = `${LOAD_STEP} из ${photo.comments.length} комментариев`;
     }
 
-    commentsLoader.addEventListener(`click`, function createCommentsHandler() {
-      commentsCounter += LOAD_STEP;
-      createComments(photo, commentsCounter);
+    if (photo.comments.length > LOAD_STEP) {
+      commentsLoader.addEventListener(`click`, function createCommentsHandler() {
+        commentsCounter += LOAD_STEP;
+        createComments(photo, commentsCounter);
 
-      if (commentsCounter >= (photo.comments.length - commentsCounter)) {
-        loadedComments.textContent = `${commentsCounter + (photo.comments.length - commentsCounter)} из ${photo.comments.length} комментариев`;
-        commentsLoader.classList.add(`hidden`);
-        commentsLoader.removeEventListener(`click`, createCommentsHandler);
-      } else {
-        loadedComments.textContent = `${commentsCounter + LOAD_STEP} из ${photo.comments.length} комментариев`;
-      }
-    });
+        if ((photo.comments.length - commentsCounter) <= LOAD_STEP) {
+          loadedComments.textContent = `${commentsCounter + (photo.comments.length - commentsCounter)} из ${photo.comments.length} комментариев`;
+          commentsLoader.classList.add(`hidden`);
+          commentsLoader.removeEventListener(`click`, createCommentsHandler);
+        } else {
+          loadedComments.textContent = `${commentsCounter + LOAD_STEP} из ${photo.comments.length} комментариев`;
+        }
+      });
+    }
 
     cancelButton.addEventListener(`click`, onCancelClick);
 
@@ -138,7 +141,7 @@
   };
 
   const createPosts = () => {
-    window.load(function (responsePosts) {
+    window.backend.load(function (responsePosts) {
       const postFragment = document.createDocumentFragment();
 
       for (let i = 0; i < responsePosts.length; i++) {
@@ -146,7 +149,7 @@
       }
 
       picturesBlock.appendChild(postFragment);
-    }, function () {});
+    }, window.backend.loadError);
 
   };
 
