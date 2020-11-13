@@ -11,6 +11,7 @@
   const closeButton = uploadForm.querySelector(`#upload-cancel`);
   const hashtagsInput = uploadForm.querySelector(`.text__hashtags`);
   const commentInput = uploadForm.querySelector(`.text__description`);
+  const mainForm = document.querySelector(`.img-upload__form`);
 
   // Закрытие формы и сброс настроек
 
@@ -107,5 +108,16 @@
 
   hashtagsInput.addEventListener(`input`, onHashtagsInput);
   commentInput.addEventListener(`input`, onCommentInput);
+
+  // Отправка данных формы на сервер
+
+  const onMainFormSubmit = (evt) => {
+    evt.preventDefault();
+    const formData = new FormData(mainForm);
+    window.backend.save(window.backend.successUpload, window.backend.errorUpload, formData);
+    closeForm();
+  };
+
+  mainForm.addEventListener(`submit`, onMainFormSubmit);
 
 })();

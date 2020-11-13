@@ -14,13 +14,71 @@
   };
 
   const TIMEOUT_IN_MS = 10000;
+  const EXIT_BUTTON = `Escape`;
+  const main = document.querySelector(`main`);
+  const type = {
+    SUCCESS: `success`,
+    ERROR: `error`
+  };
+  const successMessageTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
+  const successMessage = successMessageTemplate.cloneNode(true);
+  const errorMessageTemplate = document.querySelector(`#error `).content.querySelector(`.error`);
+  const errorMessage = errorMessageTemplate.cloneNode(true);
+  const closeSuccessButton = successMessage.querySelector(`.success__button`);
+  const closeErrorButton = errorMessage.querySelector(`.error__button`);
 
-  const loadError = (errorMessage) => {
+  const loadError = (message) => {
     const errorWindow = document.createElement(`div`);
     errorWindow.classList.add(`error-window`);
 
-    errorWindow.textContent = errorMessage;
+    errorWindow.textContent = message;
     document.body.insertAdjacentElement(`afterbegin`, errorWindow);
+  };
+
+  const onCloseSuccessButtonClick = () => {
+    successMessage.remove();
+  };
+
+  const onCloseErrorButtonClick = () => {
+    errorMessage.remove();
+  };
+
+  const successUpload = () => {
+
+    main.appendChild(successMessage);
+
+    closeSuccessButton.addEventListener(`click`, onCloseSuccessButtonClick);
+
+    document.addEventListener(`keydown`, (evt) => {
+      if (evt.key === EXIT_BUTTON) {
+        onCloseSuccessButtonClick();
+      }
+    });
+
+    document.addEventListener(`click`, (evt) => {
+      if (evt.target.className === type.SUCCESS) {
+        onCloseSuccessButtonClick();
+      }
+    });
+  };
+
+  const errorUpload = () => {
+
+    main.appendChild(errorMessage);
+
+    closeErrorButton.addEventListener(`click`, onCloseErrorButtonClick);
+
+    document.addEventListener(`keydown`, (evt) => {
+      if (evt.key === EXIT_BUTTON) {
+        onCloseErrorButtonClick();
+      }
+    });
+
+    document.addEventListener(`click`, (evt) => {
+      if (evt.target.className === type.ERROR) {
+        onCloseSuccessButtonClick();
+      }
+    });
   };
 
   const request = function (onSuccess, onError, data) {
@@ -58,7 +116,9 @@
   window.backend = {
     load: request,
     save: request,
-    loadError
+    loadError,
+    successUpload,
+    errorUpload
   };
 
 })();
