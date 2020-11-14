@@ -39,8 +39,22 @@
     successMessage.remove();
   };
 
+  const onDocumentEscKeydownSuccess = (evt) => {
+    if (evt.key === EXIT_BUTTON) {
+      onCloseSuccessButtonClick();
+    }
+    document.removeEventListener(`keydown`, onDocumentEscKeydownSuccess);
+  };
+
   const onCloseErrorButtonClick = () => {
     errorMessage.remove();
+  };
+
+  const onDocumentEscKeydownError = (evt) => {
+    if (evt.key === EXIT_BUTTON) {
+      onCloseErrorButtonClick();
+    }
+    document.removeEventListener(`keydown`, onDocumentEscKeydownError);
   };
 
   const successUpload = () => {
@@ -49,11 +63,7 @@
 
     closeSuccessButton.addEventListener(`click`, onCloseSuccessButtonClick);
 
-    document.addEventListener(`keydown`, (evt) => {
-      if (evt.key === EXIT_BUTTON) {
-        onCloseSuccessButtonClick();
-      }
-    });
+    document.addEventListener(`keydown`, onDocumentEscKeydownSuccess);
 
     document.addEventListener(`click`, (evt) => {
       if (evt.target.className === type.SUCCESS) {
@@ -68,15 +78,11 @@
 
     closeErrorButton.addEventListener(`click`, onCloseErrorButtonClick);
 
-    document.addEventListener(`keydown`, (evt) => {
-      if (evt.key === EXIT_BUTTON) {
-        onCloseErrorButtonClick();
-      }
-    });
+    document.addEventListener(`keydown`, onDocumentEscKeydownError);
 
     document.addEventListener(`click`, (evt) => {
       if (evt.target.className === type.ERROR) {
-        onCloseSuccessButtonClick();
+        onCloseErrorButtonClick();
       }
     });
   };
