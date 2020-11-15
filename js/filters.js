@@ -2,6 +2,7 @@
 
 (function () {
 
+  const RANDOM_POST_COUNT = 10;
   const buttons = document.querySelectorAll(`.img-filters__button`);
   const buttonDefault = document.querySelector(`#filter-default`);
   const buttonRandom = document.querySelector(`#filter-random`);
@@ -15,29 +16,33 @@
     });
   };
 
-  buttonDefault.addEventListener(`click`, function () {
+  buttonDefault.addEventListener(`click`, window.utils.debounce(function () {
     removeActiveClass();
     buttonDefault.classList.add(`img-filters__button--active`);
-    let defaultPosts = window.backend.responsePosts;
-    console.log(window.backend.responsePosts);
+    const defaultPosts = window.backend.responsePosts;
     window.posts.createPosts(defaultPosts);
-  });
+  }));
 
-  buttonRandom.addEventListener(`click`, function () {
+  buttonRandom.addEventListener(`click`, window.utils.debounce(function () {
     removeActiveClass();
     buttonRandom.classList.add(`img-filters__button--active`);
     const newPosts = [];
     window.backend.responsePosts.forEach((post) => {
       newPosts.push(post);
     });
-    let randomPosts = window.utils.shuffleArray(newPosts).slice(0, 10);
-    console.log(randomPosts);
+    const randomPosts = window.utils.shuffleArray(newPosts).slice(0, RANDOM_POST_COUNT);
     window.posts.createPosts(randomPosts);
-  });
+  }));
 
-  buttonDiscussed.addEventListener(`click`, function () {
+  buttonDiscussed.addEventListener(`click`, window.utils.debounce(function () {
     removeActiveClass();
     buttonDiscussed.classList.add(`img-filters__button--active`);
-  });
+    const newPosts = [];
+    window.backend.responsePosts.forEach((post) => {
+      newPosts.push(post);
+    });
+    const discussedPosts = newPosts.sort((a, b) => b.comments.length - a.comments.length);
+    window.posts.createPosts(discussedPosts);
+  }));
 
 })();

@@ -4,7 +4,6 @@
 
   // const COUNT = 25;
   const LOAD_STEP = 5;
-  let posts = [];
   const postTemplate = document.querySelector(`#picture`).content.querySelector(`.picture`);
   const picturesBlock = document.querySelector(`.pictures`);
   const EXIT_BUTTON = `Escape`;
@@ -163,7 +162,6 @@
 
     filters.classList.remove(`img-filters--inactive`);
 
-    window.posts.posts = responsePosts;
   };
 
   // posts = window.data.generatePosts(COUNT);
@@ -173,8 +171,7 @@
   window.backend.load(createPosts, window.backend.loadError);
 
   window.posts = {
-    createPosts,
-    posts
+    createPosts
   };
 
 })();
