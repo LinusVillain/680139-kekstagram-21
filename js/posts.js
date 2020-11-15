@@ -18,6 +18,7 @@
   const commentsBlock = document.querySelector(`.social__comments`);
   const commentsLoader = postBlock.querySelector(`.comments-loader`);
   const loadedComments = postBlock.querySelector(`.social__comment-count`);
+  const filters = document.querySelector(`.img-filters`);
 
 
   const createComment = (comment) => {
@@ -144,24 +145,35 @@
     return postElement;
   };
 
-  const createPosts = () => {
-    window.backend.load(function (responsePosts) {
-      const postFragment = document.createDocumentFragment();
+  const createPosts = (responsePosts) => {
 
-      for (let i = 0; i < responsePosts.length; i++) {
-        postFragment.appendChild(createPost(responsePosts[i]));
-      }
+    const oldPictures = document.querySelectorAll(`.picture`);
 
-      picturesBlock.appendChild(postFragment);
-    }, window.backend.loadError);
+    oldPictures.forEach((picture) => {
+      picture.remove();
+    });
 
+    const postFragment = document.createDocumentFragment();
+
+    for (let i = 0; i < responsePosts.length; i++) {
+      postFragment.appendChild(createPost(responsePosts[i]));
+    }
+
+    picturesBlock.appendChild(postFragment);
+
+    filters.classList.remove(`img-filters--inactive`);
+
+    window.posts.posts = responsePosts;
   };
 
   // posts = window.data.generatePosts(COUNT);
 
-  createPosts();
+  // createPosts();
+
+  window.backend.load(createPosts, window.backend.loadError);
 
   window.posts = {
+    createPosts,
     posts
   };
 
