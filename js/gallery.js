@@ -2,9 +2,8 @@
 
 (function () {
 
-  // const COUNT = 25;
   const LOAD_STEP = 5;
-  let posts = [];
+  let dataPosts = [];
   const postTemplate = document.querySelector(`#picture`).content.querySelector(`.picture`);
   const picturesBlock = document.querySelector(`.pictures`);
   const EXIT_BUTTON = `Escape`;
@@ -18,6 +17,7 @@
   const commentsBlock = document.querySelector(`.social__comments`);
   const commentsLoader = postBlock.querySelector(`.comments-loader`);
   const loadedComments = postBlock.querySelector(`.social__comment-count`);
+  const filters = document.querySelector(`.img-filters`);
 
 
   const createComment = (comment) => {
@@ -119,7 +119,18 @@
     });
   };
 
+  const removePosts = () => {
+
+    const oldPictures = document.querySelectorAll(`.picture`);
+
+    oldPictures.forEach((picture) => {
+      picture.remove();
+    });
+
+  };
+
   const createPost = (photo) => {
+
     const postElement = postTemplate.cloneNode(true);
     const image = postElement.querySelector(`.picture__img`);
     const likes = postElement.querySelector(`.picture__likes`);
@@ -142,27 +153,38 @@
     });
 
     return postElement;
-  };
-
-  const createPosts = () => {
-    window.backend.load(function (responsePosts) {
-      const postFragment = document.createDocumentFragment();
-
-      for (let i = 0; i < responsePosts.length; i++) {
-        postFragment.appendChild(createPost(responsePosts[i]));
-      }
-
-      picturesBlock.appendChild(postFragment);
-    }, window.backend.loadError);
 
   };
 
-  // posts = window.data.generatePosts(COUNT);
+  const renderPosts = (data) => {
 
-  createPosts();
+    removePosts();
 
-  window.posts = {
-    posts
+    const postFragment = document.createDocumentFragment();
+
+    for (let i = 0; i < data.length; i++) {
+      postFragment.appendChild(createPost(data[i]));
+    }
+
+    picturesBlock.appendChild(postFragment);
+
+  };
+
+  const createPosts = (responsePosts) => {
+
+    dataPosts = responsePosts.slice();
+
+    renderPosts(responsePosts);
+
+    filters.classList.remove(`img-filters--inactive`);
+  };
+
+  window.backend.load(createPosts, window.backend.loadError);
+
+  window.gallery = {
+    dataPosts: () => dataPosts,
+    createPosts,
+    renderPosts
   };
 
 })();
