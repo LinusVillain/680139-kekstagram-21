@@ -19,18 +19,6 @@
   const commentsLoader = postBlock.querySelector(`.comments-loader`);
   const loadedComments = postBlock.querySelector(`.social__comment-count`);
 
-  const deleteComments = function () {
-    const commentsArray = commentsBlock.querySelectorAll(`.social__comment`);
-    for (let i = 0; i < commentsArray.length; i++) {
-      commentsArray[i].remove();
-    }
-  };
-
-  const onCancelClick = () => {
-    postBlock.classList.add(`hidden`);
-    document.body.classList.remove(`modal-open`);
-    deleteComments();
-  };
 
   const createComment = (comment) => {
     const newComment = document.createElement(`li`);
@@ -62,6 +50,33 @@
 
   const onPostElementClick = (photo) => {
 
+    const deleteComments = function () {
+      const commentsArray = commentsBlock.querySelectorAll(`.social__comment`);
+      for (let i = 0; i < commentsArray.length; i++) {
+        commentsArray[i].remove();
+      }
+    };
+
+    const onCancelClick = () => {
+      postBlock.classList.add(`hidden`);
+      document.body.classList.remove(`modal-open`);
+      deleteComments();
+      commentsLoader.removeEventListener(`click`, createCommentsHandler);
+    };
+
+    function createCommentsHandler() {
+      commentsCounter += LOAD_STEP;
+      createComments(photo, commentsCounter);
+
+      if ((photo.comments.length - commentsCounter) <= LOAD_STEP) {
+        loadedComments.textContent = `${commentsCounter + (photo.comments.length - commentsCounter)} из ${photo.comments.length} комментариев`;
+        commentsLoader.classList.add(`hidden`);
+        commentsLoader.removeEventListener(`click`, createCommentsHandler);
+      } else {
+        loadedComments.textContent = `${commentsCounter + LOAD_STEP} из ${photo.comments.length} комментариев`;
+      }
+    }
+
     let commentsCounter = 0;
     if (photo.comments.length > LOAD_STEP) {
       commentsLoader.classList.remove(`hidden`);
@@ -92,18 +107,7 @@
     }
 
     if (photo.comments.length > LOAD_STEP) {
-      commentsLoader.addEventListener(`click`, function createCommentsHandler() {
-        commentsCounter += LOAD_STEP;
-        createComments(photo, commentsCounter);
-
-        if ((photo.comments.length - commentsCounter) <= LOAD_STEP) {
-          loadedComments.textContent = `${commentsCounter + (photo.comments.length - commentsCounter)} из ${photo.comments.length} комментариев`;
-          commentsLoader.classList.add(`hidden`);
-          commentsLoader.removeEventListener(`click`, createCommentsHandler);
-        } else {
-          loadedComments.textContent = `${commentsCounter + LOAD_STEP} из ${photo.comments.length} комментариев`;
-        }
-      });
+      commentsLoader.addEventListener(`click`, createCommentsHandler);
     }
 
     cancelButton.addEventListener(`click`, onCancelClick);
