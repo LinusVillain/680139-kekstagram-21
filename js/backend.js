@@ -3,7 +3,6 @@
 (function () {
   const URL_LOAD = `https://21.javascript.pages.academy/kekstagram/data`;
   const URL_UPLOAD = `https://21.javascript.pages.academy/kekstagram`;
-  let responsePosts = [];
 
   const StatusCode = {
     OK: 200
@@ -95,7 +94,6 @@
     xhr.addEventListener(`load`, function () {
       if (xhr.status === StatusCode.OK) {
         onSuccess(xhr.response);
-        window.backend.responsePosts = xhr.response;
       } else {
         onError(`Статус ответа: ` + xhr.status + ` ` + xhr.statusText);
       }
@@ -126,8 +124,7 @@
     save: request,
     loadError,
     successUpload,
-    errorUpload,
-    responsePosts
+    errorUpload
   };
 
 })();

@@ -2,8 +2,8 @@
 
 (function () {
 
-  // const COUNT = 25;
   const LOAD_STEP = 5;
+  let dataPosts = [];
   const postTemplate = document.querySelector(`#picture`).content.querySelector(`.picture`);
   const picturesBlock = document.querySelector(`.pictures`);
   const EXIT_BUTTON = `Escape`;
@@ -119,7 +119,18 @@
     });
   };
 
+  const removePosts = () => {
+
+    const oldPictures = document.querySelectorAll(`.picture`);
+
+    oldPictures.forEach((picture) => {
+      picture.remove();
+    });
+
+  };
+
   const createPost = (photo) => {
+
     const postElement = postTemplate.cloneNode(true);
     const image = postElement.querySelector(`.picture__img`);
     const likes = postElement.querySelector(`.picture__likes`);
@@ -142,36 +153,38 @@
     });
 
     return postElement;
+
   };
 
-  const createPosts = (responsePosts) => {
+  const renderPosts = (data) => {
 
-    const oldPictures = document.querySelectorAll(`.picture`);
-
-    oldPictures.forEach((picture) => {
-      picture.remove();
-    });
+    removePosts();
 
     const postFragment = document.createDocumentFragment();
 
-    for (let i = 0; i < responsePosts.length; i++) {
-      postFragment.appendChild(createPost(responsePosts[i]));
+    for (let i = 0; i < data.length; i++) {
+      postFragment.appendChild(createPost(data[i]));
     }
 
     picturesBlock.appendChild(postFragment);
 
-    filters.classList.remove(`img-filters--inactive`);
-
   };
 
-  // posts = window.data.generatePosts(COUNT);
+  const createPosts = (responsePosts) => {
 
-  // createPosts();
+    dataPosts = responsePosts.slice();
+
+    renderPosts(responsePosts);
+
+    filters.classList.remove(`img-filters--inactive`);
+  };
 
   window.backend.load(createPosts, window.backend.loadError);
 
-  window.posts = {
-    createPosts
+  window.gallery = {
+    dataPosts: () => dataPosts,
+    createPosts,
+    renderPosts
   };
 
 })();
