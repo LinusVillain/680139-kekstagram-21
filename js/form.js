@@ -23,7 +23,7 @@
     window.editPhoto.transformImage(window.editPhoto.MAX_SCALE);
     window.editPhoto.imagePreview.children[0].classList.remove(window.editPhoto.chosenEffectClass);
     window.editPhoto.chosenEffect = window.editPhoto.NO_EFFECT;
-    window.editPhoto.chosenEffectClass = window.editPhoto.effectClass + window.editPhoto.chosenEffect;
+    window.editPhoto.chosenEffectClass = window.editPhoto.EFFECT_CLASS + window.editPhoto.chosenEffect;
     window.editPhoto.imagePreview.children[0].classList.add(window.editPhoto.chosenEffectClass);
 
     if (!window.editPhoto.effectLevelContainer.classList.contains(`hidden`)) {
@@ -48,7 +48,7 @@
     if (hashtags.length === 1 && hashtags[0] === ``) {
       hashtagsInput.setCustomValidity(``);
     } else {
-      hashtags.forEach(function (hashtag) {
+      hashtags.forEach((hashtag) => {
 
         if (!HASTAG_REGEX.test(hashtag)) {
           hashtagsInput.setCustomValidity(`Не удовлетворяет условиям:

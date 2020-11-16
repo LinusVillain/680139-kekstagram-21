@@ -8,7 +8,7 @@
   const MAX_EFFECT_VALUE = 100;
   const MAX_POSITION = `100%`;
   const NO_EFFECT = `none`;
-  const effectClass = `effects__preview--`;
+  const EFFECT_CLASS = `effects__preview--`;
   let chosenEffect = `none`;
   const effectLevel = {
     none: {
@@ -64,7 +64,7 @@
   const effectsChangeHandler = (evt) => {
     imagePreview.children[0].classList.remove(chosenEffectClass);
     chosenEffect = evt.target.value;
-    chosenEffectClass = effectClass + chosenEffect;
+    chosenEffectClass = EFFECT_CLASS + chosenEffect;
     imagePreview.children[0].classList.add(chosenEffectClass);
 
     if (evt.target.value !== `none`) {
@@ -148,7 +148,7 @@
 
   // Наложение эффекта
 
-  let chosenEffectClass = effectClass + chosenEffect;
+  let chosenEffectClass = EFFECT_CLASS + chosenEffect;
 
   effectLevelContainer.classList.add(`hidden`);
   imagePreview.children[0].classList.add(chosenEffectClass);
@@ -160,7 +160,7 @@
     MAX_EFFECT_VALUE,
     NO_EFFECT,
     effects,
-    effectClass,
+    EFFECT_CLASS,
     chosenEffect,
     scaleValue,
     imagePreview,

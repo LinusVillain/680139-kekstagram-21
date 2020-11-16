@@ -31,13 +31,19 @@
     removeActiveClass();
     buttonRandom.classList.add(`img-filters__button--active`);
 
-    const newPosts = [];
+    const randomPosts = [];
 
-    window.gallery.dataPosts().forEach((post) => {
-      newPosts.push(post);
-    });
+    const checkItem = (item) => {
+      return randomPosts.indexOf(item) < 0;
+    };
 
-    const randomPosts = window.utils.shuffleArray(newPosts).slice(0, RANDOM_POST_COUNT);
+    while (randomPosts.length < RANDOM_POST_COUNT) {
+      let item = window.gallery.dataPosts()[window.utils.getRandomInt(0, window.gallery.dataPosts().length - 1)];
+      if (checkItem(item)) {
+        randomPosts.push(item);
+      }
+    }
+
     window.gallery.renderPosts(randomPosts);
   }));
 

@@ -92,7 +92,7 @@
 
   // Получение и отправка данных на сервер
 
-  const request = (onSuccess, onError, data) => {
+  const executeRequest = (onSuccess, onError, data) => {
     let xhr = new XMLHttpRequest();
     xhr.responseType = `json`;
 
@@ -124,8 +124,8 @@
   };
 
   window.backend = {
-    load: request,
-    save: request,
+    load: executeRequest,
+    save: executeRequest,
     loadError,
     showSuccessUpload,
     showErrorUpload
