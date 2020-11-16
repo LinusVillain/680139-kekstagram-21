@@ -1,18 +1,16 @@
 'use strict';
 
 (function () {
+
   const URL_LOAD = `https://21.javascript.pages.academy/kekstagram/data`;
   const URL_UPLOAD = `https://21.javascript.pages.academy/kekstagram`;
-
-  const StatusCode = {
+  const statusCode = {
     OK: 200
   };
-
   const requestType = {
     POST: `POST`,
     GET: `GET`
   };
-
   const TIMEOUT_IN_MS = 10000;
   const EXIT_BUTTON = `Escape`;
   const main = document.querySelector(`main`);
@@ -27,13 +25,19 @@
   const closeSuccessButton = successMessage.querySelector(`.success__button`);
   const closeErrorButton = errorMessage.querySelector(`.error__button`);
 
-  const loadError = (message) => {
-    const errorWindow = document.createElement(`div`);
-    errorWindow.classList.add(`error-window`);
+  // Рендер сообщения об ошибке загрузки данных
 
+  const loadError = (message) => {
+
+    const errorWindow = document.createElement(`div`);
+
+    errorWindow.classList.add(`error-window`);
     errorWindow.textContent = message;
     document.body.insertAdjacentElement(`afterbegin`, errorWindow);
+
   };
+
+  // Добавление и закрытие сообщений после отправки данных формы
 
   const onCloseSuccessButtonClick = () => {
     successMessage.remove();
@@ -54,11 +58,11 @@
     if (evt.key === EXIT_BUTTON) {
       onCloseErrorButtonClick();
     }
+
     document.removeEventListener(`keydown`, onDocumentEscKeydownError);
   };
 
-  const successUpload = () => {
-
+  const showSuccessUpload = () => {
     main.appendChild(successMessage);
 
     closeSuccessButton.addEventListener(`click`, onCloseSuccessButtonClick);
@@ -72,8 +76,7 @@
     });
   };
 
-  const errorUpload = () => {
-
+  const showErrorUpload = () => {
     main.appendChild(errorMessage);
 
     closeErrorButton.addEventListener(`click`, onCloseErrorButtonClick);
@@ -87,12 +90,14 @@
     });
   };
 
-  const request = function (onSuccess, onError, data) {
+  // Получение и отправка данных на сервер
+
+  const request = (onSuccess, onError, data) => {
     let xhr = new XMLHttpRequest();
     xhr.responseType = `json`;
 
     xhr.addEventListener(`load`, function () {
-      if (xhr.status === StatusCode.OK) {
+      if (xhr.status === statusCode.OK) {
         onSuccess(xhr.response);
       } else {
         onError(`Статус ответа: ` + xhr.status + ` ` + xhr.statusText);
@@ -116,15 +121,14 @@
       xhr.open(requestType.GET, URL_LOAD);
       xhr.send();
     }
-
   };
 
   window.backend = {
     load: request,
     save: request,
     loadError,
-    successUpload,
-    errorUpload
+    showSuccessUpload,
+    showErrorUpload
   };
 
 })();

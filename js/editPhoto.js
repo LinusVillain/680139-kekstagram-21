@@ -6,6 +6,7 @@
   const MIN_SCALE = 25;
   const SCALE_STEP = 25;
   const MAX_EFFECT_VALUE = 100;
+  const MAX_POSITION = `100%`;
   const NO_EFFECT = `none`;
   const effectClass = `effects__preview--`;
   let chosenEffect = `none`;
@@ -74,8 +75,8 @@
     effectValue.value = MAX_EFFECT_VALUE;
 
     imagePreview.children[0].style.filter = (evt.target.value === NO_EFFECT) ? evt.target.value : `${effectLevel[chosenEffect].type}(${effectLevel[chosenEffect].max}${effectLevel[chosenEffect].units})`;
-    effectPin.style.left = `100%`;
-    effectDepth.style.width = `100%`;
+    effectPin.style.left = MAX_POSITION;
+    effectDepth.style.width = MAX_POSITION;
   };
 
   // Изменение масштаба
@@ -105,12 +106,12 @@
 
   // Движение ползунка
 
-  effectPin.addEventListener(`mousedown`, function (evt) {
+  effectPin.addEventListener(`mousedown`, (evt) => {
     evt.preventDefault();
 
     let startCoordinates = evt.clientX;
 
-    const onMouseMove = function (moveEvt) {
+    const onMouseMove = (moveEvt) => {
       moveEvt.preventDefault();
 
       let shift = startCoordinates - moveEvt.clientX;
@@ -134,7 +135,7 @@
       }
     };
 
-    const onMouseUp = function (upEvt) {
+    const onMouseUp = (upEvt) => {
       upEvt.preventDefault();
 
       document.removeEventListener(`mousemove`, onMouseMove);
@@ -146,6 +147,7 @@
   });
 
   // Наложение эффекта
+
   let chosenEffectClass = effectClass + chosenEffect;
 
   effectLevelContainer.classList.add(`hidden`);

@@ -19,10 +19,12 @@
   const loadedComments = postBlock.querySelector(`.social__comment-count`);
   const filters = document.querySelector(`.img-filters`);
 
+  // Создание и добавление комментариев
 
   const createComment = (comment) => {
     const newComment = document.createElement(`li`);
     newComment.classList.add(`social__comment`);
+
     const userPicture = document.createElement(`img`);
     userPicture.classList.add(`social__picture`);
     userPicture.src = comment.avatar;
@@ -30,17 +32,20 @@
     userPicture.width = `35`;
     userPicture.height = `35`;
     newComment.append(userPicture);
+
     const commentText = document.createElement(`p`);
     commentText.classList.add(`social__text`);
     commentText.textContent = comment.message;
     newComment.append(commentText);
+
     return newComment;
   };
 
-  const createComments = function (post, alreadyCreated) {
+  const createComments = (post, alreadyCreated) => {
     const commentsFragment = document.createDocumentFragment();
 
     let commentsToRender = post.comments.slice(alreadyCreated, alreadyCreated + 5);
+
     for (let i = 0; i < commentsToRender.length; i++) {
       commentsFragment.appendChild(createComment(commentsToRender[i]));
     }
@@ -50,8 +55,9 @@
 
   const onPostElementClick = (photo) => {
 
-    const deleteComments = function () {
+    const deleteComments = () => {
       const commentsArray = commentsBlock.querySelectorAll(`.social__comment`);
+
       for (let i = 0; i < commentsArray.length; i++) {
         commentsArray[i].remove();
       }
@@ -60,11 +66,15 @@
     const onCancelClick = () => {
       postBlock.classList.add(`hidden`);
       document.body.classList.remove(`modal-open`);
+
       deleteComments();
+
       commentsLoader.removeEventListener(`click`, createCommentsHandler);
     };
 
-    function createCommentsHandler() {
+    // Прогрузка блока с 5 комментариями
+
+    const createCommentsHandler = () => {
       commentsCounter += LOAD_STEP;
       createComments(photo, commentsCounter);
 
@@ -75,7 +85,7 @@
       } else {
         loadedComments.textContent = `${commentsCounter + LOAD_STEP} из ${photo.comments.length} комментариев`;
       }
-    }
+    };
 
     let commentsCounter = 0;
     if (photo.comments.length > LOAD_STEP) {
@@ -112,25 +122,26 @@
 
     cancelButton.addEventListener(`click`, onCancelClick);
 
-    document.addEventListener(`keydown`, (event) => {
-      if (event.key === EXIT_BUTTON) {
+    document.addEventListener(`keydown`, (evnt) => {
+      if (evnt.key === EXIT_BUTTON) {
         onCancelClick();
       }
     });
   };
 
-  const removePosts = () => {
+  // Очищение галлерреи
 
+  const removePosts = () => {
     const oldPictures = document.querySelectorAll(`.picture`);
 
     oldPictures.forEach((picture) => {
       picture.remove();
     });
-
   };
 
-  const createPost = (photo) => {
+  // Создание и добавление поста
 
+  const createPost = (photo) => {
     const postElement = postTemplate.cloneNode(true);
     const image = postElement.querySelector(`.picture__img`);
     const likes = postElement.querySelector(`.picture__likes`);
@@ -145,19 +156,17 @@
       onPostElementClick(photo);
     });
 
-    postElement.addEventListener(`keydown`, (event) => {
-      if (event.key === ENTER_BUTTON) {
-        event.preventDefault();
+    postElement.addEventListener(`keydown`, (evtDown) => {
+      if (evtDown.key === ENTER_BUTTON) {
+        evtDown.preventDefault();
         onPostElementClick(photo);
       }
     });
 
     return postElement;
-
   };
 
   const renderPosts = (data) => {
-
     removePosts();
 
     const postFragment = document.createDocumentFragment();
@@ -167,15 +176,13 @@
     }
 
     picturesBlock.appendChild(postFragment);
-
   };
 
+  // Получение данных с сервера
+
   const createPosts = (responsePosts) => {
-
     dataPosts = responsePosts.slice();
-
     renderPosts(responsePosts);
-
     filters.classList.remove(`img-filters--inactive`);
   };
 

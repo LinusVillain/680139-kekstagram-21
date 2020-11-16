@@ -13,19 +13,21 @@
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const x = array[i];
+
       array[i] = array[j];
       array[j] = x;
     }
     return array;
   };
 
-  const debounce = function (cb) {
+  const debounce = (cb) => {
     let lastTimeout = null;
 
     return (...parameters) => {
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }
+
       lastTimeout = window.setTimeout(() => {
         cb(...parameters);
       }, DEBOUNCE_INTERVAL);

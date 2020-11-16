@@ -21,7 +21,6 @@
     uploadInput.value = ``;
 
     window.editPhoto.transformImage(window.editPhoto.MAX_SCALE);
-
     window.editPhoto.imagePreview.children[0].classList.remove(window.editPhoto.chosenEffectClass);
     window.editPhoto.chosenEffect = window.editPhoto.NO_EFFECT;
     window.editPhoto.chosenEffectClass = window.editPhoto.effectClass + window.editPhoto.chosenEffect;
@@ -50,6 +49,7 @@
       hashtagsInput.setCustomValidity(``);
     } else {
       hashtags.forEach(function (hashtag) {
+
         if (!HASTAG_REGEX.test(hashtag)) {
           hashtagsInput.setCustomValidity(`Не удовлетворяет условиям:
           1. хэш-тег начинается с символа # (решётка);
@@ -68,6 +68,7 @@
 
       let copyHashtags = hashtags.slice().sort();
       for (let i = 0; i < copyHashtags.length - 1; i++) {
+
         if (copyHashtags[i + 1].toLowerCase() === copyHashtags[i].toLowerCase()) {
           hashtagsInput.setCustomValidity(`Один и тот же хэш-тег не может быть использован дважды.`);
         }
@@ -114,7 +115,8 @@
   const onMainFormSubmit = (evt) => {
     evt.preventDefault();
     const formData = new FormData(mainForm);
-    window.backend.save(window.backend.successUpload, window.backend.errorUpload, formData);
+
+    window.backend.save(window.backend.showSuccessUpload, window.backend.showErrorUpload, formData);
     closeForm();
   };
 
